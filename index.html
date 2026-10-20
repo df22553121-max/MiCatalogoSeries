@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0812">
+<title>MiCatalogoSeries | Anime</title>
+
+<style>
+:root {
+  --fondo:#0b0812;
+  --panel:#151020;
+  --panel2:#1d162b;
+  --morado:#a855f7;
+  --morado-claro:#c084fc;
+  --texto:#faf7ff;
+  --secundario:#b9aec9;
+  --borde:rgba(192,132,252,.17);
+  --sombra:0 12px 35px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--texto);
+  background:radial-gradient(ellipse at 15% 0%,rgba(126,34,206,.18),transparent 38%),
+  radial-gradient(ellipse at 100% 45%,rgba(88,28,135,.12),transparent 35%),var(--fondo);
+  font-family:Inter,"Segoe UI",Arial,sans-serif;min-height:100vh
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2px solid var(--morado-claro);outline-offset:3px
+}
+header{
+  position:sticky;top:0;z-index:10;background:rgba(11,8,18,.91);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--borde)
+}
+.nav{
+  max-width:1320px;margin:auto;padding:17px 24px;display:flex;
+  align-items:center;justify-content:space-between;gap:18px
+}
+.logo{font-size:22px;font-weight:900;letter-spacing:-.8px;white-space:nowrap}
+.logo span{color:var(--morado-claro)}
+.nav-derecha{display:flex;gap:15px;align-items:center}
+.nav a{color:var(--secundario);text-decoration:none;font-size:14px}
+.contenedor{width:min(1320px,100%);margin:auto;padding:25px 24px 50px}
+.hero{
+  position:relative;overflow:hidden;padding:clamp(30px,6vw,70px);min-height:290px;
+  border:1px solid rgba(192,132,252,.23);border-radius:24px;
+  background:radial-gradient(ellipse at 80% 20%,rgba(168,85,247,.35),transparent 45%),
+  linear-gradient(115deg,#21112f 0%,#130d20 52%,#0e0b17 100%);
+  box-shadow:var(--sombra)
+}
+.hero::after{
+  content:"✦";position:absolute;right:8%;top:2%;color:rgba(216,180,254,.13);
+  font-size:clamp(130px,23vw,280px);line-height:1;pointer-events:none
+}
+.etiqueta{
+  display:inline-flex;align-items:center;gap:8px;color:#e9d5ff;
+  background:rgba(168,85,247,.13);border:1px solid rgba(192,132,252,.3);
+  border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;
+  letter-spacing:1px;text-transform:uppercase
+}
+.hero h1{
+  position:relative;z-index:1;max-width:650px;margin:20px 0 12px;
+  font-size:clamp(32px,5vw,56px);letter-spacing:-1.7px;line-height:1.08
+}
+.hero h1 span{
+  background:linear-gradient(90deg,#d8b4fe,#a855f7);
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.hero p{position:relative;z-index:1;max-width:560px;color:#c7bbd5;line-height:1.7}
+.acciones-hero{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:23px}
+.boton{
+  border:1px solid transparent;border-radius:10px;padding:11px 15px;
+  background:linear-gradient(135deg,#a855f7,#7e22ce);color:white;
+  font-weight:750;transition:transform .2s,filter .2s
+}
+.boton:hover{filter:brightness(1.13);transform:translateY(-1px)}
+.boton-secundario{background:#21192e;color:#eee4ff;border:1px solid var(--borde)}
+.boton-pequeno{padding:7px 10px}
+.seccion-titulo{
+  display:flex;justify-content:space-between;align-items:end;gap:12px;margin:34px 0 17px
+}
+.seccion-titulo h2{margin:0;font-size:23px}
+.seccion-titulo p{margin:6px 0 0;color:var(--secundario);font-size:13px}
+.controles{
+  display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,250px) auto;
+  gap:10px;margin:20px 0
+}
+input,select{
+  width:100%;min-width:0;color:var(--texto);background:#171120;
+  border:1px solid #342440;border-radius:10px;padding:12px 13px
+}
+input::placeholder{color:#93859f}
+select option{background:#171120}
+.catalogo{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:19px}
+.tarjeta{
+  min-width:0;overflow:hidden;border-radius:15px;
+  background:linear-gradient(180deg,#1b1426,#120e19);
+  border:1px solid var(--borde);box-shadow:0 5px 20px rgba(0,0,0,.13);
+  transition:transform .22s,border-color .22s,box-shadow .22s
+}
+.tarjeta:hover{
+  transform:translateY(-5px);border-color:rgba(192,132,252,.65);
+  box-shadow:0 12px 32px rgba(126,34,206,.17)
+}
+.poster{
+  position:relative;aspect-ratio:2/3;
+  background:radial-gradient(ellipse at 50% 35%,#56316d,#20142c 58%,#100d17);
+  overflow:hidden;display:grid;place-items:center
+}
+.poster img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block
+}
+.poster-fallback{font-size:58px;text-shadow:0 5px 25px rgba(0,0,0,.5)}
+.etiqueta-poster{
+  position:absolute;z-index:1;left:9px;top:9px;background:rgba(14,9,22,.84);
+  color:#e9d5ff;border:1px solid rgba(216,180,254,.24);
+  border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800
+}
+.info{padding:13px}
+.info h3{font-size:15px;line-height:1.35;margin:0 0 7px;overflow-wrap:anywhere}
+.info .categoria{font-size:11px;color:var(--secundario);min-height:30px;line-height:1.4}
+.precio{color:#d8b4fe;font-weight:800;margin:12px 0}
+.precio-anterior{color:var(--secundario);text-decoration:line-through;font-size:13px;margin-left:6px}
+.info button{width:100%;margin-top:7px;font-size:12px}
+.panel{
+  margin-top:24px;padding:22px;background:linear-gradient(145deg,rgba(29,22,43,.94),rgba(18,14,25,.96));
+  border:1px solid var(--borde);border-radius:17px;box-shadow:var(--sombra);
+  scroll-margin-top:90px
+}
+.panel h2{margin-top:0;font-size:21px}
+.panel p{line-height:1.6}
+.linea{
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;
+  padding:13px 0;border-bottom:1px solid var(--borde)
+}
+.linea:last-child{border-bottom:0}
+.cantidad{display:flex;gap:8px;align-items:center}
+.cantidad button{min-width:31px}
+.total{font-size:20px;font-weight:900;color:#d8b4fe}
+.pedido{
+  border:1px solid var(--borde);background:rgba(11,8,18,.36);
+  padding:14px;border-radius:11px;margin-top:10px;overflow-wrap:anywhere
+}
+.pedido small,.texto-secundario{color:var(--secundario)}
+.pedido p{white-space:pre-line}
+.botones-panel{display:flex;flex-wrap:wrap;gap:9px}
+.vacio{
+  grid-column:1/-1;padding:30px;text-align:center;border:1px dashed #49335b;
+  border-radius:13px;color:var(--secundario)
+}
+footer{border-top:1px solid var(--borde);text-align:center;color:var(--secundario);padding:28px 16px;font-size:12px}
+.oculto{display:none!important}
+small{line-height:1.5}
+.destacados{margin-top:30px}
+.destacados-encabezado{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px
+}
+.destacados-encabezado h2{margin:0;font-size:23px}
+.destacados-encabezado p{color:var(--secundario);font-size:13px;margin:6px 0 0}
+.fila-destacados{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.destacado-card{
+  position:relative;min-height:210px;overflow:hidden;display:flex;align-items:end;
+  border-radius:16px;border:1px solid var(--borde);
+  background:radial-gradient(ellipse at 80% 20%,rgba(168,85,247,.4),transparent 55%),
+  linear-gradient(135deg,#2c1742,#110c1b);box-shadow:var(--sombra);isolation:isolate
+}
+.destacado-card::before{
+  content:"";position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(0deg,rgba(10,7,16,.97),rgba(10,7,16,.05))
+}
+.destacado-card img{
+  position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;opacity:.55
+}
+.destacado-contenido{padding:18px;width:100%}
+.destacado-etiqueta{
+  display:inline-block;padding:5px 8px;margin-bottom:8px;border-radius:6px;
+  background:rgba(168,85,247,.85);color:white;font-size:10px;font-weight:800;text-transform:uppercase
+}
+.destacado-contenido h3{margin:0 0 7px;font-size:20px}
+.destacado-contenido p{color:#ddd2e9;font-size:12px;line-height:1.5;margin:0 0 13px}
+.ofertas-cyber{
+  margin:30px 0;padding:22px;border:1px solid rgba(168,85,247,.45);border-radius:20px;
+  background:radial-gradient(ellipse at top right,rgba(168,85,247,.22),transparent 60%),
+  linear-gradient(135deg,#21112f,#100b19)
+}
+.ofertas-cabecera{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.ofertas-cabecera h2{margin:0;font-size:25px}
+.ofertas-cabecera p{margin:7px 0 0;color:var(--secundario);font-size:13px}
+.cyber-etiqueta{background:#a855f7;color:white;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:bold}
+.ofertas-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.oferta-card{padding:18px;background:rgba(255,255,255,.04);border:1px solid var(--borde);border-radius:15px}
+.oferta-card h3{margin:12px 0 8px}
+.oferta-icono{font-size:35px}
+.oferta-descuento{
+  display:inline-block;background:#3b174e;color:#e9c8ff;border:1px solid #a855f7;
+  padding:5px 9px;border-radius:7px;font-size:12px;font-weight:bold
+}
+.precio-oferta{color:#d8b4fe;font-size:24px;font-weight:800;margin:5px 0 14px}
+.oferta-aviso{color:var(--secundario);font-size:12px;line-height:1.6;margin-top:18px}
+@media(max-width:1000px){.catalogo{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:720px){
+  .nav{padding:14px 16px}.nav a{display:none}
+  .contenedor{padding:18px 14px 35px}
+  .catalogo{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .controles{grid-template-columns:1fr 1fr}#busqueda{grid-column:1/-1}
+  .hero{border-radius:17px}.fila-destacados,.ofertas-grid{grid-template-columns:1fr}
+  .destacado-card{min-height:190px}.ofertas-cyber{padding:15px}
+}
+@media(max-width:470px){
+  .catalogo{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .info{padding:10px}.info h3{font-size:14px}
+  .info button{font-size:11px;padding:9px 5px}
+  .seccion-titulo h2{font-size:20px}.panel{padding:15px}.logo{font-size:19px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="logo">MiCatalogo<span>Series</span> ✦</div>
+    <div class="nav-derecha">
+      <a href="#catalogoSeccion">Anime</a>
+      <a href="#panelCarrito">Mi carrito</a>
+      <a href="#panelHistorial">Pedidos</a>
+      <button class="boton boton-secundario boton-pequeno" onclick="irA('panelCarrito')">
+        🛒 <span id="contadorCarrito">0</span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main class="contenedor">
+  <section class="hero">
+    <span class="etiqueta">✦ Tu universo anime</span>
+    <h1>Historias que te llevan a <span>otro mundo.</span></h1>
+    <p>Explora aventuras, combates legendarios y grandes historias. Encuentra tu próximo anime favorito en un catálogo hecho para ti.</p>
+    <div class="acciones-hero">
+      <button class="boton" onclick="irA('catalogoSeccion')">✦ Explorar catálogo</button>
+      <button class="boton boton-secundario" onclick="irA('panelCarrito')">Ver mi carrito</button>
+    </div>
+  </section>
+
+  <section class="destacados" id="animesDestacados">
+    <div class="destacados-encabezado">
+      <div><h2>💜 Animes destacados</h2><p>Historias que merecen un lugar especial.</p></div>
+      <span class="etiqueta">Selección especial</span>
+    </div>
+    <div class="fila-destacados">
+      <article class="destacado-card">
+        <img src="imagenes/dragon-ball-z.jpg" alt="Dragon Ball Z" loading="lazy" onerror="this.style.display='none'">
+        <div class="destacado-contenido">
+          <span class="destacado-etiqueta">Acción legendaria</span>
+          <h3>Dragon Ball Z</h3><p>Goku y sus amigos se enfrentan a poderosos enemigos.</p>
+          <button class="boton" onclick="verDetalle(1)">Ver anime</button>
+        </div>
+      </article>
+      <article class="destacado-card">
+        <img src="imagenes/captain-tsubasa.jpg" alt="Captain Tsubasa" loading="lazy" onerror="this.style.display='none'">
+        <div class="destacado-contenido">
+          <span class="destacado-etiqueta">Pasión por el fútbol</span>
+          <h3>Captain Tsubasa (2018)</h3><p>Talento, amistad y grandes partidos de fútbol.</p>
+          <button class="boton" onclick="verDetalle(5)">Ver anime</button>
+        </div>
+      </article>
+      <article class="destacado-card">
+        <img src="imagenes/one-piece.jpg" alt="One Piece" loading="lazy" onerror="this.style.display='none'">
+        <div class="destacado-contenido">
+          <span class="destacado-etiqueta">Gran aventura</span>
+          <h3>One Piece</h3><p>Luffy y su tripulación navegan en busca de su sueño.</p>
+          <button class="boton" onclick="verDetalle(4)">Ver anime</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="ofertas-cyber" id="ofertasCyber">
+    <div class="ofertas-cabecera">
+      <div><h2>⚡ Ofertas y descuentos</h2><p id="textoOfertas">Revisa los precios normales o las ofertas Cyber activas.</p></div>
+      <span class="cyber-etiqueta">CYBER EDITION 💜</span>
+    </div>
+    <div class="ofertas-grid" id="ofertasGrid"></div>
+    <p class="oferta-aviso" id="avisoCyber">
+      Precios de demostración, no ofertas oficiales. Las fechas Cyber deben configurarse cuando se anuncien.
+    </p>
+  </section>
+
+  <section id="catalogoSeccion">
+    <div class="seccion-titulo">
+      <div><h2>✦ Explora el catálogo</h2><p>Encuentra tu próxima aventura.</p></div>
+      <span class="etiqueta" id="cantidadAnimes">10 animes</span>
+    </div>
+    <div class="controles">
+      <input id="busqueda" type="search" placeholder="🔎 Buscar un anime..." oninput="renderProductos()">
+      <select id="filtro" onchange="renderProductos()"><option value="">Todas las categorías</option></select>
+      <button class="boton boton-secundario" onclick="mostrarTodo()">Limpiar</button>
+    </div>
+    <div id="catalogo" class="catalogo"></div>
+    <p id="sinResultados" class="vacio oculto">No encontramos animes con esa búsqueda.</p>
+  </section>
+
+  <section id="detalle" class="panel oculto">
+    <span class="etiqueta">Ficha del anime</span>
+    <h2 id="detalleTitulo"></h2>
+    <p id="detalleCategoria" class="texto-secundario"></p>
+    <p id="detalleDescripcion"></p>
+    <p id="detallePrecio" class="total"></p>
+    <div class="botones-panel">
+      <button id="detalleAgregar" class="boton">Agregar al carrito</button>
+      <button class="boton boton-secundario" onclick="cerrarDetalle()">Cerrar ficha</button>
+    </div>
+  </section>
+
+  <section class="panel" id="panelCarrito">
+    <h2>🛒 Mi carrito</h2>
+    <p class="texto-secundario">Revisa los títulos seleccionados y sus cantidades.</p>
+    <div id="carrito"></div>
+    <p class="total" id="total">Total: $0 CLP</p>
+    <div class="botones-panel">
+      <button class="boton" onclick="prepararPedido()">Consultar por WhatsApp</button>
+      <button class="boton boton-secundario" onclick="vaciarCarrito()">Vaciar carrito</button>
+    </div>
+    <p><small class="texto-secundario">Precios de demostración. La consulta no confirma disponibilidad ni procesa pagos.</small></p>
+  </section>
+
+  <section class="panel" id="panelHistorial">
+    <h2>📋 Historial de pedidos</h2>
+    <p class="texto-secundario">Tus pedidos guardados en este navegador.</p>
+    <div id="historial"></div>
+    <div class="botones-panel" style="margin-top:15px">
+      <button class="boton boton-secundario" onclick="exportarHistorial()">Guardar historial como archivo</button>
+      <button class="boton boton-secundario" onclick="borrarHistorial()">Borrar historial</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="logo">MiCatalogo<span>Series</span> ✦</div>
+  <p>Tu universo anime, en un solo lugar.</p>
+  <p>Catálogo de demostración · Diseño Purple Edition</p>
+</footer>
+
+<script>
+"use strict";
+
+/* CONFIGURACIÓN CYBER:
+   Escribe las fechas oficiales en formato AAAA-MM-DD.
+   Mientras estén vacías, los descuentos están desactivados. */
+const CYBER_INICIO = "";
+const CYBER_TERMINO = "";
+
+/* Conserva el número de WhatsApp configurado en tu versión anterior. */
+const TELEFONO_WHATSAPP = "56941408355";
+
+const animes = [
+  {id:1,nombre:"Dragon Ball Z",imagen:"imagenes/dragon-ball-z.jpg",emoji:"🐉",precio:2990,precioCyber:2490,categoria:"Acción y aventura",anio:1989,descripcion:"Las aventuras de Goku y sus amigos."},
+  {id:2,nombre:"Naruto",imagen:"imagenes/naruto.jpg",emoji:"🍥",precio:3990,categoria:"Acción y ninjas",anio:2002,descripcion:"La historia del joven ninja Naruto Uzumaki."},
+  {id:3,nombre:"Bleach",imagen:"imagenes/bleach.jpg",emoji:"⚔️",precio:4990,categoria:"Acción y sobrenatural",anio:2004,descripcion:"Ichigo obtiene poderes de shinigami."},
+  {id:4,nombre:"One Piece",imagen:"imagenes/one-piece.jpg",emoji:"🏴‍☠️",precio:3990,precioCyber:2990,categoria:"Aventura y piratas",anio:1999,descripcion:"Luffy y su tripulación buscan el One Piece."},
+  {id:5,nombre:"Captain Tsubasa (2018)",imagen:"imagenes/captain-tsubasa.jpg",emoji:"⚽",precio:3990,precioCyber:2990,categoria:"Deportes y fútbol",anio:2018,descripcion:"Tsubasa sueña con convertirse en futbolista."},
+  {id:6,nombre:"Death Note",imagen:"imagenes/death-note.jpg",emoji:"📓",precio:3990,categoria:"Misterio y sobrenatural",anio:2006,descripcion:"Un cuaderno misterioso cambia la vida de Light."},
+  {id:7,nombre:"Demon Slayer",imagen:"imagenes/demon-slayer.jpg",emoji:"🗡️",precio:4990,categoria:"Acción y fantasía",anio:2019,descripcion:"Tanjiro emprende una peligrosa misión."},
+  {id:8,nombre:"My Hero Academia",imagen:"imagenes/my-hero-academia.jpg",emoji:"🦸",precio:3990,categoria:"Acción y superhéroes",anio:2016,descripcion:"Izuku sueña con convertirse en héroe."},
+  {id:9,nombre:"Jujutsu Kaisen",imagen:"imagenes/jujutsu-kaisen.jpg",emoji:"👊",precio:4990,categoria:"Acción y sobrenatural",anio:2020,descripcion:"Yuji se enfrenta a maldiciones peligrosas."},
+  {id:10,nombre:"Hunter x Hunter",imagen:"imagenes/hunter-x-hunter.jpg",emoji:"🟢",precio:3990,categoria:"Aventura y acción",anio:2011,descripcion:"Gon comienza su aventura para encontrar a su padre."}
+];
+
+function cargar(clave,defecto){
+  try{
+    const dato=localStorage.getItem(clave);
+    return dato?JSON.parse(dato):defecto;
+  }catch(error){return defecto;}
+}
+
+let carrito=cargar("miCatalogoSeriesCarrito",[]);
+let pedidos=cargar("miCatalogoSeriesPedidos",[]);
+let animeSeleccionado=null;
+
+function guardar(){
+  try{
+    localStorage.setItem("miCatalogoSeriesCarrito",JSON.stringify(carrito));
+    localStorage.setItem("miCatalogoSeriesPedidos",JSON.stringify(pedidos));
+  }catch(error){
+    console.warn("No se pudo guardar en el almacenamiento local.",error);
+  }
+}
+
+function pesos(valor){
+  return "$"+Number(valor||0).toLocaleString("es-CL")+" CLP";
+}
+
+function escapar(texto){
+  return String(texto??"").replace(/[&<>"']/g,letra=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[letra]);
+}
+
+function irA(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function ofertaCyberActiva(){
+  if(!CYBER_INICIO||!CYBER_TERMINO)return false;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(CYBER_INICIO)||! /^\d{4}-\d{2}-\d{2}$/.test(CYBER_TERMINO))return false;
+  const ahora=new Date();
+  const hoy=[ahora.getFullYear(),String(ahora.getMonth()+1).padStart(2,"0"),String(ahora.getDate()).padStart(2,"0")].join("-");
+  return hoy>=CYBER_INICIO&&hoy<=CYBER_TERMINO;
+}
+
+function obtenerPrecio(anime){
+  return ofertaCyberActiva()&&typeof anime.precioCyber==="number"
+    ?anime.precioCyber:anime.precio;
+}
+
+function cargarCategorias(){
+  const filtro=document.getElementById("filtro");
+  const categorias=[...new Set(animes.map(a=>a.categoria))].sort((a,b)=>a.localeCompare(b,"es"));
+  categorias.forEach(categoria=>{
+    const opcion=document.createElement("option");
+    opcion.value=categoria;
+    opcion.textContent=categoria;
+    filtro.appendChild(opcion);
+  });
+}
+
+function renderProductos(){
+  const texto=document.getElementById("busqueda").value.toLocaleLowerCase("es").trim();
+  const categoria=document.getElementById("filtro").value;
+  const catalogo=document.getElementById("catalogo");
+  const lista=animes.filter(a=>
+    (a.nombre.toLocaleLowerCase("es").includes(texto)||a.categoria.toLocaleLowerCase("es").includes(texto))&&
+    (!categoria||a.categoria===categoria)
+  );
+
+  catalogo.innerHTML="";
+  document.getElementById("cantidadAnimes").textContent=lista.length+(lista.length===1?" anime":" animes");
+  document.getElementById("sinResultados").classList.toggle("oculto",lista.length>0);
+
+  lista.forEach(a=>{
+    const tarjeta=document.createElement("article");
+    tarjeta.className="tarjeta";
+    const poster=document.createElement("div");
+    poster.className="poster";
+
+    const fallback=document.createElement("span");
+    fallback.className="poster-fallback";
+    fallback.textContent=a.emoji;
+    poster.appendChild(fallback);
+
+    const img=document.createElement("img");
+    img.src=a.imagen;
+    img.alt="Póster de "+a.nombre;
+    img.loading="lazy";
+    img.onerror=function(){this.remove();};
+    img.onload=function(){fallback.remove();};
+    poster.appendChild(img);
+
+    const etiqueta=document.createElement("span");
+    etiqueta.className="etiqueta-poster";
+    etiqueta.textContent=String(a.anio);
+    poster.appendChild(etiqueta);
+
+    const precio=obtenerPrecio(a);
+    const info=document.createElement("div");
+    info.className="info";
+    const precioHTML=ofertaCyberActiva()&&typeof a.precioCyber==="number"
+      ?`${pesos(precio)} <span class="precio-anterior">${pesos(a.precio)}</span>`
+      :pesos(precio);
+
+    info.innerHTML=`
+      <h3>${escapar(a.nombre)}</h3>
+      <div class="categoria">${escapar(a.categoria)}</div>
+      <div class="precio">${precioHTML}</div>
+      <button class="boton boton-secundario" data-detalle="${a.id}">Ver detalles</button>
+      <button class="boton" data-agregar="${a.id}">＋ Agregar</button>`;
+
+    info.querySelector("[data-detalle]").addEventListener("click",()=>verDetalle(a.id));
+    info.querySelector("[data-agregar]").addEventListener("click",()=>agregar(a.id));
+    tarjeta.append(poster,info);
+    catalogo.appendChild(tarjeta);
+  });
+}
+
+function mostrarTodo(){
+  document.getElementById("busqueda").value="";
+  document.getElementById("filtro").value="";
+  renderProductos();
+}
+
+function verDetalle(id){
+  const a=animes.find(item=>item.id===id);
+  if(!a)return;
+  animeSeleccionado=id;
+  document.getElementById("detalleTitulo").textContent=a.nombre;
+  document.getElementById("detalleCategoria").textContent=a.categoria+" · "+a.anio;
+  document.getElementById("detalleDescripcion").textContent=a.descripcion;
+  document.getElementById("detallePrecio").textContent=pesos(obtenerPrecio(a));
+  document.getElementById("detalle").classList.remove("oculto");
+  document.getElementById("detalleAgregar").onclick=()=>agregar(animeSeleccionado);
+  irA("detalle");
+}
+
+function cerrarDetalle(){
+  document.getElementById("detalle").classList.add("oculto");
+}
+
+function agregar(id){
+  const a=animes.find(item=>item.id===id);
+  if(!a)return;
+  const existente=carrito.find(item=>item.id===id);
+  if(existente)existente.cantidad++;
+  else carrito.push({id:a.id,cantidad:1});
+  guardar();
+  renderCarrito();
+}
+
+function cambiarCantidad(id,cambio){
+  const item=carrito.find(p=>p.id===id);
+  if(!item)return;
+  item.cantidad+=cambio;
+  if(item.cantidad<=0)carrito=carrito.filter(p=>p.id!==id);
+  guardar();
+  renderCarrito();
+}
+
+function vaciarCarrito(){
+  if(!carrito.length)return;
+  if(confirm("¿Quieres vaciar el carrito?")){
+    carrito=[];
+    guardar();
+    renderCarrito();
+  }
+}
+
+function renderCarrito(){
+  const zona=document.getElementById("carrito");
+  zona.innerHTML="";
+  let total=0,unidades=0;
+
+  if(!carrito.length){
+    zona.textContent="Tu carrito está vacío. Explora el catálogo para agregar animes.";
+  }
+
+  carrito.forEach(item=>{
+    const a=animes.find(x=>x.id===item.id);
+    if(!a||!Number.isFinite(item.cantidad)||item.cantidad<1)return;
+    const precio=obtenerPrecio(a);
+    total+=precio*item.cantidad;
+    unidades+=item.cantidad;
+
+    const fila=document.createElement("div");
+    fila.className="linea";
+    fila.innerHTML=`
+      <div><strong>${escapar(a.nombre)}</strong><br>
+      <small class="texto-secundario">${pesos(precio)} cada uno</small></div>
+      <div class="cantidad">
+        <button class="boton boton-secundario boton-pequeno" aria-label="Restar">−</button>
+        <span>${item.cantidad}</span>
+        <button class="boton boton-secundario boton-pequeno" aria-label="Sumar">+</button>
+      </div>
+      <strong>${pesos(precio*item.cantidad)}</strong>`;
+    const botones=fila.querySelectorAll("button");
+    botones[0].onclick=()=>cambiarCantidad(a.id,-1);
+    botones[1].onclick=()=>cambiarCantidad(a.id,1);
+    zona.appendChild(fila);
+  });
+
+  document.getElementById("total").textContent="Total: "+pesos(total);
+  document.getElementById("contadorCarrito").textContent=unidades;
+}
+
+function renderOfertas(){
+  const destacados=[
+    {id:1,icono:"🐉",nombre:"Dragon Ball Z"},
+    {id:5,icono:"⚽",nombre:"Captain Tsubasa (2018)"},
+    {id:4,icono:"🏴‍☠️",nombre:"One Piece"}
+  ];
+  const activa=ofertaCyberActiva();
+  document.getElementById("textoOfertas").textContent=activa
+    ?`¡Ofertas Cyber activas hasta el ${CYBER_TERMINO}!`
+    :"Los descuentos se activarán automáticamente durante las fechas configuradas.";
+
+  document.getElementById("ofertasGrid").innerHTML=destacados.map(item=>{
+    const a=animes.find(x=>x.id===item.id);
+    const precio=obtenerPrecio(a);
+    const conDescuento=activa&&typeof a.precioCyber==="number";
+    const porcentaje=conDescuento?Math.round((1-precio/a.precio)*100):0;
+    return `<article class="oferta-card">
+      <div class="oferta-icono">${item.icono}</div>
+      ${conDescuento?`<span class="oferta-descuento">${porcentaje}% DE DESCUENTO</span>`:`<span class="etiqueta">Precio normal</span>`}
+      <h3>${escapar(a.nombre)}</h3>
+      ${conDescuento?`<div class="precio-anterior">${pesos(a.precio)}</div>`:""}
+      <div class="precio-oferta">${pesos(precio)}</div>
+      <button class="boton" onclick="verDetalle(${a.id})">Ver anime</button>
+    </article>`;
+  }).join("");
+
+  if(!CYBER_INICIO||!CYBER_TERMINO){
+    document.getElementById("avisoCyber").textContent=
+      "Precios de demostración, no ofertas oficiales. Las fechas están vacías, por lo que los descuentos están desactivados.";
+  }else{
+    document.getElementById("avisoCyber").textContent=
+      `Periodo configurado: ${CYBER_INICIO} al ${CYBER_TERMINO}. Verifica las fechas antes de activar una promoción.`;
+  }
+}
+
+function prepararPedido(){
+  if(!carrito.length){
+    alert("Agrega al menos un anime al carrito.");
+    return;
+  }
+
+  const numero=TELEFONO_WHATSAPP.replace(/\D/g,"");
+  if(numero.length<11){
+    alert("Revisa el número de WhatsApp configurado en el código.");
+    return;
+  }
+
+  let total=0;
+  const lineas=carrito.map(item=>{
+    const a=animes.find(x=>x.id===item.id);
+    if(!a)return "";
+    const precio=obtenerPrecio(a);
+    total+=precio*item.cantidad;
+    return `- ${a.nombre} x${item.cantidad}: ${pesos(precio*item.cantidad)}`;
+  }).filter(Boolean);
+
+  const pedido={
+    numero:pedidos.reduce((mayor,p)=>Math.max(mayor,Number(p.numero)||0),0)+1,
+    fecha:new Date().toLocaleString("es-CL"),
+    detalles:lineas,total,
+    estado:"Pendiente de consulta"
+  };
+  pedidos.unshift(pedido);
+  guardar();
+  renderHistorial();
+
+  const mensaje=`Hola, quisiera consultar disponibilidad:\n${lineas.join("\n")}\nTotal referencial: ${pesos(total)}\nPedido #${pedido.numero}`;
+  window.open("https://wa.me/"+numero+"?text="+encodeURIComponent(mensaje),"_blank","noopener,noreferrer");
+}
+
+function renderHistorial(){
+  const zona=document.getElementById("historial");
+  zona.innerHTML="";
+  if(!pedidos.length){
+    zona.textContent="Todavía no tienes pedidos guardados.";
+    return;
+  }
+  pedidos.forEach(p=>{
+    const bloque=document.createElement("div");
+    bloque.className="pedido";
+    const titulo=document.createElement("strong");
+    titulo.textContent="Pedido #"+(p.numero??"?");
+    const fecha=document.createElement("small");
+    fecha.textContent="\n"+(p.fecha||"")+" · "+(p.estado||"Pendiente");
+    const detalles=document.createElement("p");
+    detalles.textContent=Array.isArray(p.detalles)?p.detalles.join("\n"):String(p.detalles||"");
+    const total=document.createElement("strong");
+    total.textContent=pesos(p.total);
+    bloque.append(titulo,document.createElement("br"),fecha,detalles,total);
+    zona.appendChild(bloque);
+  });
+}
+
+function exportarHistorial(){
+  if(!pedidos.length){
+    alert("Todavía no hay pedidos para exportar.");
+    return;
+  }
+  const archivo=new Blob([JSON.stringify(pedidos,null,2)],{type:"application/json;charset=utf-8"});
+  const url=URL.createObjectURL(archivo);
+  const enlace=document.createElement("a");
+  enlace.href=url;
+  enlace.download="historial-pedidos.json";
+  enlace.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function borrarHistorial(){
+  if(!pedidos.length)return;
+  if(confirm("¿Quieres borrar todo el historial de pedidos guardado en este navegador?")){
+    pedidos=[];
+    guardar();
+    renderHistorial();
+  }
+}
+
+/* Actualiza precios y vistas al iniciar. */
+cargarCategorias();
+renderProductos();
+renderCarrito();
+renderHistorial();
+renderOfertas();
+</script>
+</body>
+</html>
