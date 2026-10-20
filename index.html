@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+<had>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0b0812">
@@ -320,7 +320,8 @@ small{line-height:1.5}
     <div id="carrito"></div>
     <p class="total" id="total">Total: $0 CLP</p>
     <div class="botones-panel">
-      <button class="boton" onclick="prepararPedido()">Consultar por WhatsApp</button>
+      <button class="boton" onclick="prepararPedido()"
+        <button class="boton boton-secundario" onclick="pedirPorCorreo()">Pedir por correo</button>
       <button class="boton boton-secundario" onclick="vaciarCarrito()">Vaciar carrito</button>
     </div>
     <p><small class="texto-secundario">Precios de demostración. La consulta no confirma disponibilidad ni procesa pagos.</small></p>
@@ -620,6 +621,7 @@ function prepararPedido(){
   }
 
   let total=0;
+  
   const lineas=carrito.map(item=>{
     const a=animes.find(x=>x.id===item.id);
     if(!a)return "";
@@ -641,7 +643,59 @@ function prepararPedido(){
   const mensaje=`Hola, quisiera consultar disponibilidad:\n${lineas.join("\n")}\nTotal referencial: ${pesos(total)}\nPedido #${pedido.numero}`;
   window.open("https://wa.me/"+numero+"?text="+encodeURIComponent(mensaje),"_blank","noopener,noreferrer");
 }
+  
+function pedirPorCorreo(){
+  if(!carrito.length){
+    alert("Tu carrito está vacío.");
+    return;
+  }
 
+  const lineas = carrito.map(p =>
+    `${p.nombre} x${p.cantidad} - ${pesos(p.precio * p.cantidad)}`
+  );
+
+  const total = carrito.reduce(
+    (suma, p) => suma + p.precio * p.cantidad, 0
+  );
+
+  const asunto = "Pedido MiCatalogoSeries";
+  const cuerpo = `Hola, quisiera consultar disponibilidad:\n${lineas.join("\n")}\nTotal referencial: ${pesos(total)}`;
+
+  window.location.href =
+    "mailto:micatalogoseries@gmail.com" +
+    "?subject=" + encodeURIComponent(asunto) +
+    "&body=" + encodeURIComponent(cuerpo);
+}
+
+function pedirPorCorreo(){
+  if(!carrito.length){
+    alert("Tu carrito está vacío.");
+    return;
+  }
+
+  let total = 0;
+
+  const lineas = carrito.map(item => {
+    const anime = animes.find(x => x.id === item.id);
+    if(!anime) return "";
+
+    const precio = obtenerPrecio(anime);
+    total += precio * item.cantidad;
+
+    return `- ${anime.nombre} x${item.cantidad}: ${pesos(precio * item.cantidad)}`;
+  }).filter(Boolean);
+
+  const asunto = "Pedido MiCatalogoSeries";
+  const cuerpo =
+    `Hola, quisiera consultar disponibilidad:\n` +
+    `${lineas.join("\n")}\n` +
+    `Total referencial: ${pesos(total)}`;
+
+  window.location.href =
+    "mailto:micatalogoseries@gmail.com" +
+    "?subject=" + encodeURIComponent(asunto) +
+    "&body=" + encodeURIComponent(cuerpo);
+}
 function renderHistorial(){
   const zona=document.getElementById("historial");
   zona.innerHTML="";
